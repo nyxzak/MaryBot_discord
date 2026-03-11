@@ -56,28 +56,33 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-app.get('/', (req, res) => {
-    res.send('Olá, Estou viva!')
-});
+// Servidor HTTP e login rodando de forma independente
+app.get('/', (req, res) => res.send('Olá, Estou viva!'));
+app.listen(process.env.PORT || 3000, () => console.log('Servidor HTTP ativo!'));
 
-app.listen(process.env.PORT || 3000, () => {
-    console.log('✅ Servidor HTTP ativo!');
+// Login separado, fora do callback
+console.log('Tentando fazer login...');
+client.login(process.env.DISCORD_TOKEN)
+    .then(() => console.log('Login bem sucedido!'))
+    .catch((err) => console.error('Erro no login:', err.message));
+
+// app.get('/', (req, res) => {
+//     res.send('Olá, Estou viva!')
+// });
+
+// app.listen(process.env.PORT || 3000, () => {
+//     console.log('✅ Servidor HTTP ativo!');
+//     console.log('Tentando fazer login...');
     
-    const token = process.env.DISCORD_TOKEN;
-    console.log('Token encontrado?', !!token);
-    console.log('Primeiros 10 caracteres do token:', token?.slice(0, 10)); // ← novo
-    console.log('Tamanho do token:', token?.length); // ← novo
-    console.log('Tentando fazer login...');
-    
-    // Só faz login no Discord depois que o servidor HTTP estiver de pé
-    client.login(token)
-        .then(() => {
-            console.log('Login no Discord bem sucedido!');
-        })
-        .catch((err) => {
-            console.error('Erro no login:', err.message);
-        });
-});
+//     // Só faz login no Discord depois que o servidor HTTP estiver de pé
+//     client.login(process.env.DISCORD_TOKEN)
+//         .then(() => {
+//             console.log('Login no Discord bem sucedido!');
+//         })
+//         .catch((err) => {
+//             console.error('Erro no login:', err.message);
+//         });
+// });
 
 //client.login(process.env.DISCORD_TOKEN)
 //    .then(() => {
