@@ -5,29 +5,20 @@ const express = require('express');
 const app = express();
 console.log('Iniciando o bot...');
 
-app.get('/', (req, res) => {
-    res.send('Olá, Estou viva!')
-});
-
-app.listen(process.env.PORT || 3000, () => {
-    console.log('✅ Servidor HTTP ativo!');
-    
-    // Só faz login no Discord depois que o servidor HTTP estiver de pé
-    client.login(process.env.DISCORD_TOKEN)
-        .then(() => {
-            console.log('✅ Login no Discord bem sucedido!');
-        })
-        .catch((err) => {
-            console.error('❌ Erro no login:', err.message);
-        });
-});
-
 const client = new Client({ // Cria uma nova instância do Client com as intenções necessárias
     intents: [
         GatewayIntentBits.Guilds, // Permite que o bot acesse informações sobre os servidores
         GatewayIntentBits.GuildMessages, // Permite que o bot acesse mensagens em servidores
         GatewayIntentBits.MessageContent
     ]
+});
+
+client.once('ready', () => {
+    console.log(`SUCESSO: Bot logado como ${client.user.tag}`);
+});
+
+client.on('error', (err) => {
+    console.error('ERRO DE CONEXÃO:', err.message);
 });
 
 client.on('messageCreate', async (message) => {
@@ -65,23 +56,31 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-client.once('ready', () => {
-    console.log(`🚀 SUCESSO: Bot logado como ${client.user.tag}`);
+app.get('/', (req, res) => {
+    res.send('Olá, Estou viva!')
 });
 
-client.on('error', (err) => {
-    console.error('❌ ERRO DE CONEXÃO:', err.message);
+app.listen(process.env.PORT || 3000, () => {
+    console.log('✅ Servidor HTTP ativo!');
+    console.log('Token encontrado?', !!process.env.DISCORD_TOKEN);
+    console.log('Tentando fazer login...');
+    
+    // Só faz login no Discord depois que o servidor HTTP estiver de pé
+    client.login(process.env.DISCORD_TOKEN)
+        .then(() => {
+            console.log('Login no Discord bem sucedido!');
+        })
+        .catch((err) => {
+            console.error('Erro no login:', err.message);
+        });
 });
-
-console.log('Token encontrado?', !!process.env.DISCORD_TOKEN);
-console.log('Tentando fazer login...');
 
 //client.login(process.env.DISCORD_TOKEN)
 //    .then(() => {
-//       console.log('✅ Login bem sucedido!');
+//       console.log('Login bem sucedido!');
 //    })
 //    .catch((err) => {
-//        console.error('❌ Erro no login:', err.message); // ← vai mostrar o erro exato
+//        console.error('Erro no login:', err.message); // ← vai mostrar o erro exato
 //    });
 
 //client.login(process.env.DISCORD_TOKEN); // Faz login no Discord usando o token do arquivo .env
