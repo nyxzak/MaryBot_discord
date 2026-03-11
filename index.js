@@ -1,4 +1,4 @@
-const { Client, GatewayIntentBits } = require('discord.js'); // Importa o Client e os GatewayIntentBits do discord.j
+const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js'); // Importa o Client e os GatewayIntentBits do discord.j
 const axios = require('axios'); // Importa a biblioteca axios para fazer requisições HTTP
 require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
 
@@ -22,14 +22,27 @@ client.on('messageCreate', async (message) => {
             const partesDoNome = message.content.split(' '); // Divide a mensagem em partes usando espaço como separador
             const nomeDoAnime = partesDoNome.slice(1).join(' '); // Junta as partes do nome do anime, ignorando o comando
             if (!nomeDoAnime) {
-              return message.reply('Por Favor, Me diga o nome do anime :) Ex: /anime Re:Zero'); // Se o nome do anime não for fornecido, responde com uma mensagem de erro   
+              return message.reply('Por Favor, Me diga o nome do anime! :) Ex: /anime Re:Zero'); // Se o nome do anime não for fornecido, responde com uma mensagem de erro   
             }
         try {
-            const resposta = await axios.get('https://api.jikan.moe/v4/' + encodeURIComponent(nomeDoAnime)); // Faz uma requisição GET para a API do Jikan, passando o nome do anime como parâmetro de busca
-            const imageUrl = resposta.data.data[0]; // Acessa a URL da imagem do primeiro anime na resposta da API
-            const anime = imageUrl[0];
-            message.reply(`Aqui está a imagem do anime: ${imageUrl}`); // Responde com a URL da imagem
-            console.log(anime.title, anime.synopsis, anime.images.jpg.image.url);
+            const resposta = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(nomeDoAnime)}&limit=1`); // Faz uma requisição GET para a API do Jikan, passando o nome do anime como parâmetro de busca
+            const anime = resposta.data.data[0]; // Acessa o primeiro resultado da resposta da API
+            if (!anime) {
+                return message.reply('Deculpe, não achei o anime :(') 
+            }
+            const embed = new EmbedBuilder() // Cria um novo embed para exibir as informações do anime
+                .setColor('BE32D1')
+                .setTitle(anime.title)
+                .setURL(anime.url)
+                .setThumbnail(anime.images.jpg.image_url)
+                .addFields( // Adiciona campos ao embed com informações sobre o anime
+                     { name: 'Nota', value: `${anime.score ?? 'N/A'}`, inline: true},
+                     { name: 'Episódios', value: `${anime.episodes ?? 'N/A'}`, inline: true},
+                     { name: 'Status', value: anime.status, inline: true}
+                )
+                .setDescription(anime.synopsis ? anime.synopsis.slice(0, 400) + '...' : 'Sem sinopse disponível.') // Define a descrição do embed com a sinopse do anime, limitando a 400 caracteres
+                .setFooter({ text: 'Dados fornecidos por Jikan API' }); // Adiciona um rodapé ao embed
+                message.reply({ embeds: [embed] }); 
         } catch (error) {
             console.error('Erro ao consumir a API:', error); 
             message.reply('Desculpe, ocorreu um erro ao buscar a imagem do anime.'); 
