@@ -24,12 +24,7 @@ client.on('error', (err) => {
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return; // Ignora mensagens de outros bots
 
-<<<<<<< HEAD
     if (message.content.toLowerCase().startsWith('/anime')) { 
-=======
-    if (message.content.toLowerCase() === '/anime') { 
-            message.reply('Olá fofo(a)! Sobre qual anime quer saber mais?'); // Responde com uma mensagem de saudação
->>>>>>> parent of 8b1a277 (Finalizado (Até Então))
             const partesDoNome = message.content.split(' '); // Divide a mensagem em partes usando espaço como separador
             const nomeDoAnime = partesDoNome.slice(1).join(' '); // Junta as partes do nome do anime, ignorando o comando
             if (!nomeDoAnime) {
