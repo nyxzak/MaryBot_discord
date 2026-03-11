@@ -62,11 +62,15 @@ app.get('/', (req, res) => {
 
 app.listen(process.env.PORT || 3000, () => {
     console.log('✅ Servidor HTTP ativo!');
-    console.log('Token encontrado?', !!process.env.DISCORD_TOKEN);
+    
+    const token = process.env.DISCORD_TOKEN;
+    console.log('Token encontrado?', !!token);
+    console.log('Primeiros 10 caracteres do token:', token?.slice(0, 10)); // ← novo
+    console.log('Tamanho do token:', token?.length); // ← novo
     console.log('Tentando fazer login...');
     
     // Só faz login no Discord depois que o servidor HTTP estiver de pé
-    client.login(process.env.DISCORD_TOKEN)
+    client.login(token)
         .then(() => {
             console.log('Login no Discord bem sucedido!');
         })
