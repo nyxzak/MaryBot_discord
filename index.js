@@ -5,8 +5,6 @@ const express = require('express');
 const app = express();
 console.log('Iniciando o bot...');
 
-client.login(process.env.DISCORD_TOKEN); // Faz login no Discord usando o token do arquivo .env
-
 app.get('/', (req, res) => {
     res.send('Olá, Estou viva!')
 });
@@ -68,5 +66,4 @@ client.on('error', (err) => {
     console.error('❌ ERRO DE CONEXÃO:', err.message);
 });
 
-console.log("Verificando Token antes do login:", process.env.DISCORD_TOKEN ? "Preenchido" : "VAZIO!");
-
+client.login(process.env.DISCORD_TOKEN); // Faz login no Discord usando o token do arquivo .env
