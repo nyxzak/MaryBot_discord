@@ -17,12 +17,12 @@ client.once('ready', () => {
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return; // Ignora mensagens de outros bots
 
-    if (message.content.toLowerCase() === '/anime') { 
-            message.reply('Olá fofo(a)! Sobre qual anime quer saber mais?'); // Responde com uma mensagem de saudação
+    if (message.content.toLowerCase().startsWith('/anime')) { 
+             // Responde com uma mensagem de saudação
             const partesDoNome = message.content.split(' '); // Divide a mensagem em partes usando espaço como separador
             const nomeDoAnime = partesDoNome.slice(1).join(' '); // Junta as partes do nome do anime, ignorando o comando
             if (!nomeDoAnime) {
-              return message.reply('Por Favor, Me diga o nome do anime! :) Ex: /anime Re:Zero'); // Se o nome do anime não for fornecido, responde com uma mensagem de erro   
+              return message.reply('Olá fofo(a)! Sobre qual anime quer saber mais?'); // Se o nome do anime não for fornecido, responde com uma mensagem de erro   
             }
         try {
             const resposta = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(nomeDoAnime)}&limit=1`); // Faz uma requisição GET para a API do Jikan, passando o nome do anime como parâmetro de busca
