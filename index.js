@@ -1,47 +1,48 @@
-const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js'); // Importa o Client e os GatewayIntentBits do discord.j
-const axios = require('axios'); // Importa a biblioteca axios para fazer requisições HTTP
-require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
+const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
+const axios = require('axios');
+require('dotenv').config();
+const express = require('express'); 
+const app = express();              
 
-const client = new Client({ // Cria uma nova instância do Client com as intenções necessárias
+const client = new Client({
     intents: [
-        GatewayIntentBits.Guilds, // Permite que o bot acesse informações sobre os servidores
-        GatewayIntentBits.GuildMessages, // Permite que o bot acesse mensagens em servidores
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMessages,
         GatewayIntentBits.MessageContent
     ]
 });
 
 client.once('ready', () => {
-    console.log('Mary está pronta para ajudar!'); // Loga uma mensagem quando o bot estiver pronto
+    console.log('Mary está pronta para ajudar!');
 });
 
 client.on('messageCreate', async (message) => {
-    if (message.author.bot) return; // Ignora mensagens de outros bots
+    if (message.author.bot) return;
 
     if (message.content.toLowerCase().startsWith('/anime')) { 
-             // Responde com uma mensagem de saudação
-            const partesDoNome = message.content.split(' '); // Divide a mensagem em partes usando espaço como separador
-            const nomeDoAnime = partesDoNome.slice(1).join(' '); // Junta as partes do nome do anime, ignorando o comando
+            const partesDoNome = message.content.split(' ');
+            const nomeDoAnime = partesDoNome.slice(1).join(' ');
             if (!nomeDoAnime) {
-              return message.reply('Olá fofo(a)! Sobre qual anime quer saber mais?'); // Se o nome do anime não for fornecido, responde com uma mensagem de erro   
+              return message.reply('Olá fofo(a)! Sobre qual anime quer saber mais?');
             }
         try {
-            const resposta = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(nomeDoAnime)}&limit=1`); // Faz uma requisição GET para a API do Jikan, passando o nome do anime como parâmetro de busca
-            const anime = resposta.data.data[0]; // Acessa o primeiro resultado da resposta da API
+            const resposta = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(nomeDoAnime)}&limit=1`);
+            const anime = resposta.data.data[0];
             if (!anime) {
                 return message.reply('Deculpe, não achei o anime :(') 
             }
-            const embed = new EmbedBuilder() // Cria um novo embed para exibir as informações do anime
-                .setColor('BE32D1')
+            const embed = new EmbedBuilder()
+                .setColor('#BE32D1')
                 .setTitle(anime.title)
                 .setURL(anime.url)
                 .setThumbnail(anime.images.jpg.image_url)
-                .addFields( // Adiciona campos ao embed com informações sobre o anime
+                .addFields(
                      { name: 'Nota', value: `${anime.score ?? 'N/A'}`, inline: true},
                      { name: 'Episódios', value: `${anime.episodes ?? 'N/A'}`, inline: true},
                      { name: 'Status', value: anime.status, inline: true}
                 )
-                .setDescription(anime.synopsis ? anime.synopsis.slice(0, 400) + '...' : 'Sem sinopse disponível.') // Define a descrição do embed com a sinopse do anime, limitando a 400 caracteres
-                .setFooter({ text: 'Dados fornecidos por Jikan API' }); // Adiciona um rodapé ao embed
+                .setDescription(anime.synopsis ? anime.synopsis.slice(0, 400) + '...' : 'Sem sinopse disponível.')
+                .setFooter({ text: 'Dados fornecidos por Jikan API' });
                 message.reply({ embeds: [embed] }); 
         } catch (error) {
             console.error('Erro ao consumir a API:', error); 
@@ -50,4 +51,7 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-client.login(process.env.DISCORD_TOKEN); // Faz login no Discord usando o token do arquivo .env
+app.get('/', (req, res) => res.send('Mary está viva!'));
+app.listen(process.env.PORT || 3000, () => console.log('Servidor HTTP ativo!'));
+
+client.login(process.env.DISCORD_TOKEN);
