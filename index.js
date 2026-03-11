@@ -62,4 +62,7 @@ client.on('error', (err) => {
     console.error('❌ ERRO DE CONEXÃO:', err.message);
 });
 
+console.log('Token encontrado?', !!process.env.DISCORD_TOKEN);
+console.log('Tentando fazer login...');
+
 client.login(process.env.DISCORD_TOKEN); // Faz login no Discord usando o token do arquivo .env
