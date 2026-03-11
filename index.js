@@ -19,10 +19,6 @@ const client = new Client({ // Cria uma nova instância do Client com as intenç
     ]
 });
 
-client.once('ready', () => {
-    console.log('Mary está pronta para ajudar!'); // Loga uma mensagem quando o bot estiver pronto
-});
-
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return; // Ignora mensagens de outros bots
 
