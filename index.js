@@ -3,6 +3,7 @@ const axios = require('axios'); // Importa a biblioteca axios para fazer requisi
 require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
 const express = require('express');
 const app = express();
+console.log('Iniciando o bot...');
 
 app.get('/', (req, res) => {
     res.send('Olá, Estou viva!')
