@@ -1,9 +1,6 @@
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js'); // Importa o Client e os GatewayIntentBits do discord.j
 const axios = require('axios'); // Importa a biblioteca axios para fazer requisições HTTP
 require('dotenv').config(); // Carrega as variáveis de ambiente do arquivo .env
-const express = require('express');
-const app = express();
-console.log('Iniciando o bot...');
 
 const client = new Client({ // Cria uma nova instância do Client com as intenções necessárias
     intents: [
@@ -14,30 +11,27 @@ const client = new Client({ // Cria uma nova instância do Client com as intenç
 });
 
 client.once('ready', () => {
-    console.log(`SUCESSO: Bot logado como ${client.user.tag}`);
-});
-
-client.on('error', (err) => {
-    console.error('ERRO DE CONEXÃO:', err.message);
+    console.log('Mary está pronta para ajudar!'); // Loga uma mensagem quando o bot estiver pronto
 });
 
 client.on('messageCreate', async (message) => {
     if (message.author.bot) return; // Ignora mensagens de outros bots
 
     if (message.content.toLowerCase().startsWith('/anime')) { 
+             // Responde com uma mensagem de saudação
             const partesDoNome = message.content.split(' '); // Divide a mensagem em partes usando espaço como separador
             const nomeDoAnime = partesDoNome.slice(1).join(' '); // Junta as partes do nome do anime, ignorando o comando
             if (!nomeDoAnime) {
-              return message.reply('Por Favor, Me diga o nome do anime! :) Ex: /anime Re:Zero'); // Se o nome do anime não for fornecido, responde com uma mensagem de erro   
+              return message.reply('Olá fofo(a)! Sobre qual anime quer saber mais?'); // Se o nome do anime não for fornecido, responde com uma mensagem de erro   
             }
         try {
             const resposta = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(nomeDoAnime)}&limit=1`); // Faz uma requisição GET para a API do Jikan, passando o nome do anime como parâmetro de busca
             const anime = resposta.data.data[0]; // Acessa o primeiro resultado da resposta da API
             if (!anime) {
-                return message.reply('Desculpe, não achei o anime :(') 
+                return message.reply('Deculpe, não achei o anime :(') 
             }
             const embed = new EmbedBuilder() // Cria um novo embed para exibir as informações do anime
-                .setColor('#BE32D1')
+                .setColor('BE32D1')
                 .setTitle(anime.title)
                 .setURL(anime.url)
                 .setThumbnail(anime.images.jpg.image_url)
@@ -56,40 +50,4 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-// Servidor HTTP e login rodando de forma independente
-app.get('/', (req, res) => res.send('Olá, Estou viva!'));
-app.listen(process.env.PORT || 3000, () => console.log('Servidor HTTP ativo!'));
-
-// Login separado, fora do callback
-console.log('Tentando fazer login...');
-client.login(process.env.DISCORD_TOKEN)
-    .then(() => console.log('Login bem sucedido!'))
-    .catch((err) => console.error('Erro no login:', err.message));
-
-// app.get('/', (req, res) => {
-//     res.send('Olá, Estou viva!')
-// });
-
-// app.listen(process.env.PORT || 3000, () => {
-//     console.log('✅ Servidor HTTP ativo!');
-//     console.log('Tentando fazer login...');
-    
-//     // Só faz login no Discord depois que o servidor HTTP estiver de pé
-//     client.login(process.env.DISCORD_TOKEN)
-//         .then(() => {
-//             console.log('Login no Discord bem sucedido!');
-//         })
-//         .catch((err) => {
-//             console.error('Erro no login:', err.message);
-//         });
-// });
-
-//client.login(process.env.DISCORD_TOKEN)
-//    .then(() => {
-//       console.log('Login bem sucedido!');
-//    })
-//    .catch((err) => {
-//        console.error('Erro no login:', err.message); // ← vai mostrar o erro exato
-//    });
-
-//client.login(process.env.DISCORD_TOKEN); // Faz login no Discord usando o token do arquivo .env
+client.login(process.env.DISCORD_TOKEN); // Faz login no Discord usando o token do arquivo .env
