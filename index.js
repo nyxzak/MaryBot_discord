@@ -58,4 +58,11 @@ client.on('messageCreate', async (message) => {
     }
 });
 
+console.log("Token carregado:", process.env.TOKEN ? "Sim (existe)" : "Não (está vazio)");
+
+client.login(process.env.TOKEN).catch(err => {
+    console.error("❌ FALHA NO LOGIN:", err.message);
+});
+
+
 client.login(process.env.DISCORD_TOKEN); // Faz login no Discord usando o token do arquivo .env
