@@ -58,11 +58,12 @@ client.on('messageCreate', async (message) => {
     }
 });
 
-console.log("Token carregado:", process.env.DISCORD_TOKEN ? "Sim (existe)" : "Não (está vazio)");
-
-client.login(process.env.DISCORD_TOKEN).catch(err => {
-    console.error("❌ FALHA NO LOGIN:", err.message);
+client.once('ready', () => {
+    console.log(`🚀 SUCESSO: Bot logado como ${client.user.tag}`);
 });
 
+client.on('error', (err) => {
+    console.error('❌ ERRO DE CONEXÃO:', err.message);
+});
 
 client.login(process.env.DISCORD_TOKEN); // Faz login no Discord usando o token do arquivo .env
