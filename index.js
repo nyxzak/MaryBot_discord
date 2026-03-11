@@ -5,6 +5,8 @@ const express = require('express');
 const app = express();
 console.log('Iniciando o bot...');
 
+client.login(process.env.DISCORD_TOKEN); // Faz login no Discord usando o token do arquivo .env
+
 app.get('/', (req, res) => {
     res.send('Olá, Estou viva!')
 });
@@ -39,7 +41,7 @@ client.on('messageCreate', async (message) => {
                 return message.reply('Desculpe, não achei o anime :(') 
             }
             const embed = new EmbedBuilder() // Cria um novo embed para exibir as informações do anime
-                .setColor('BE32D1')
+                .setColor('#BE32D1')
                 .setTitle(anime.title)
                 .setURL(anime.url)
                 .setThumbnail(anime.images.jpg.image_url)
@@ -66,4 +68,5 @@ client.on('error', (err) => {
     console.error('❌ ERRO DE CONEXÃO:', err.message);
 });
 
-client.login(process.env.DISCORD_TOKEN); // Faz login no Discord usando o token do arquivo .env
+console.log("Verificando Token antes do login:", process.env.DISCORD_TOKEN ? "Preenchido" : "VAZIO!");
+
