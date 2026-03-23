@@ -27,14 +27,6 @@ client.on('messageCreate', async (message) => {
             if (!nomeDoAnime) {
               return message.reply('Olá fofo(a)! Sobre qual anime quer saber mais?');
             }
-            if (message.content.toLowerCase().startsWith('/manga')) {
-            const partesDoNome = message.content.split(' ');
-            const nomeDoManga = partesDoNome.slice(1).join(' ');
-            if (!nomeDoManga) {
-        return message.reply('Olá fofo(a)! Sobre qual mangá quer saber mais?');
-    }
-    mangaCommand(message, nomeDoManga); //chamar a função do manga.js
-}
         try {
             const resposta = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(nomeDoAnime)}&limit=1`);
             const anime = resposta.data.data[0];
@@ -59,6 +51,14 @@ client.on('messageCreate', async (message) => {
             message.reply('Desculpe, ocorreu um erro ao buscar a imagem do anime.'); 
         }
     }
+            if (message.content.toLowerCase().startsWith('/manga')) {
+            const partesDoNome = message.content.split(' ');
+            const nomeDoManga = partesDoNome.slice(1).join(' ');
+            if (!nomeDoManga) {
+            return message.reply('Olá fofo(a)! Sobre qual mangá quer saber mais?');
+        }
+            mangaCommand(message, nomeDoManga); //chamar a função do manga.js
+}
 });
 
 app.get('/', (req, res) => res.send('Mary está viva!'));
