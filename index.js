@@ -3,7 +3,8 @@ const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
 const express = require('express'); 
 const app = express();    
-const cron = require('node-cron');          
+const cron = require('node-cron');
+const mangaCommand = require('./commands/manga.js');          
 
 const client = new Client({
     intents: [
@@ -26,6 +27,14 @@ client.on('messageCreate', async (message) => {
             if (!nomeDoAnime) {
               return message.reply('Olá fofo(a)! Sobre qual anime quer saber mais?');
             }
+            if (message.content.toLowerCase().startsWith('/manga')) {
+            const partesDoNome = message.content.split(' ');
+            const nomeDoManga = partesDoNome.slice(1).join(' ');
+            if (!nomeDoManga) {
+        return message.reply('Olá fofo(a)! Sobre qual mangá quer saber mais?');
+    }
+    mangaCommand(message, nomeDoManga); //chamar a função do manga.js
+}
         try {
             const resposta = await axios.get(`https://api.jikan.moe/v4/anime?q=${encodeURIComponent(nomeDoAnime)}&limit=1`);
             const anime = resposta.data.data[0];
