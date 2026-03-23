@@ -1,8 +1,9 @@
+require('dotenv').config();
 const { Client, GatewayIntentBits, EmbedBuilder } = require('discord.js');
 const axios = require('axios');
-require('dotenv').config();
 const express = require('express'); 
-const app = express();              
+const app = express();    
+const cron = require('node-cron');          
 
 const client = new Client({
     intents: [
